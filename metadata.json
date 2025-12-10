@@ -1,0 +1,5 @@
+{
+  "name": "Divisão Justa (Split Bill)",
+  "description": "Uma ferramenta simples e inteligente para dividir contas entre amigos, minimizando o número de transações necessárias. Inclui funcionalidade de IA para importação rápida de gastos.",
+  "requestFramePermissions": []
+}
