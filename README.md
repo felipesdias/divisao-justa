@@ -1,20 +1,44 @@
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+  <!-- Você pode substituir essa imagem por um screenshot do seu app depois -->
+  <h1>Divisão Justa (Split Bill)</h1>
 </div>
 
-# Run and deploy your AI Studio app
+Uma aplicação web moderna e inteligente para dividir contas entre amigos de forma justa e descomplicada. Desenvolvida com **React**, **Vite** e **Google Gemini AI**.
 
-This contains everything you need to run your app locally.
+## ✨ Funcionalidades
 
-View your app in AI Studio: https://ai.studio/apps/drive/1nBGqDkWBnsqh54431442G3P-McPB6eXB
+*   **Divisão Simples:** Adicione pessoas, gastos e veja quanto cada um deve pagar ou receber.
+*   **IA Mágica:** Cole um texto descrevendo os gastos (ex: copiado do WhatsApp) e a IA organiza tudo automaticamente.
+*   **Interface Limpa:** Design responsivo e intuitivo.
+*   **Sem Servidor:** Tudo roda no seu navegador. Os dados da IA são processados via chave de API inserida pelo usuário.
 
-## Run Locally
+## 🚀 Como Rodar Localmente
 
-**Prerequisites:**  Node.js
+1.  Clone o repositório.
+2.  Instale as dependências:
+    ```bash
+    npm install
+    ```
+3.  Inicie o servidor de desenvolvimento:
+    ```bash
+    npm run dev
+    ```
 
+## 🌐 Deploy no GitHub Pages
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+Este projeto está pronto para ser hospedado gratuitamente no GitHub Pages. 
+
+👉 **[Clique aqui para ver o guia passo-a-passo de Deploy](DEPLOY.md)**.
+
+Basicamente, você só precisa rodar:
+
+```bash
+npm run deploy
+```
+
+E configurar o repositório no GitHub para ler a branch `gh-pages`.
+
+## 🤖 Configuração da IA
+
+Para usar a funcionalidade de "Importar com IA", você precisará de uma **API Key do Google Gemini** (gratuita).
+A aplicação pedirá a chave quando você tentar usar a função pela primeira vez. A chave fica salva apenas no seu navegador.
