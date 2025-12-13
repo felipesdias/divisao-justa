@@ -59,7 +59,9 @@ export const parseExpensesWithGemini = async (text: string, customApiKey?: strin
       id: generateId(),
       name: item.name,
       paid: Number(item.paid),
-      description: item.description || ''
+      description: item.description || '',
+      quantity: 1,
+      observation: ''
     }));
 
   } catch (error) {

@@ -11,7 +11,9 @@ const createEmptyPerson = (): Person => ({
   id: Math.random().toString(36).substr(2, 9),
   name: '',
   description: '',
-  paid: 0
+  paid: 0,
+  quantity: 1,
+  observation: ''
 });
 
 const App: React.FC = () => {
@@ -52,7 +54,8 @@ const App: React.FC = () => {
     const isLastEmpty = !lastPerson || (
       !lastPerson.name.trim() && 
       !lastPerson.description?.trim() && 
-      lastPerson.paid === 0
+      lastPerson.paid === 0 &&
+      (!lastPerson.observation || !lastPerson.observation.trim())
     );
 
     // If the last person has started typing, add a new empty row
@@ -61,7 +64,7 @@ const App: React.FC = () => {
     }
   }, [people, isLoaded]);
 
-  const updatePerson = (id: string, field: 'name' | 'paid' | 'description', value: string | number) => {
+  const updatePerson = (id: string, field: 'name' | 'paid' | 'description' | 'quantity' | 'observation', value: string | number) => {
     setPeople(people.map(p => p.id === id ? { ...p, [field]: value } : p));
   };
 
