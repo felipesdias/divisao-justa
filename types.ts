@@ -3,6 +3,8 @@ export interface Person {
   name: string;
   description?: string;
   paid: number;
+  quantity: number;
+  observation?: string;
 }
 
 export interface Transaction {

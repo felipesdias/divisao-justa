@@ -26,20 +26,41 @@ const Results: React.FC<ResultsProps> = ({ result, people, hasPeople }) => {
 
     // 1. Descrição dos gastos
     text += "*🛒 Gastos:*\n";
-    const activePeople = people.filter(p => p.name.trim() !== '' && p.paid > 0);
+    // Include everyone who has a name, even if they paid 0, so we can see their share quantity/observation
+    const activePeople = people.filter(p => p.name.trim() !== '');
     
-    if (activePeople.length === 0) {
+    if (activePeople.every(p => p.paid === 0)) {
         text += "_Nenhum gasto registrado_\n";
-    } else {
-        activePeople.forEach(p => {
+    }
+
+    activePeople.forEach(p => {
+        if (p.paid > 0) {
             const desc = p.description ? ` (${p.description})` : "";
             text += `• ${p.name}${desc}: R$ ${p.paid.toFixed(2)}\n`;
+        }
+    });
+
+    // Add observations section if any exist
+    const peopleWithObservations = activePeople.filter(p => p.observation && p.observation.trim() !== '');
+    if (peopleWithObservations.length > 0) {
+        text += "\n*📝 Observações:*\n";
+        peopleWithObservations.forEach(p => {
+             text += `• ${p.name}: ${p.observation}\n`;
         });
+    }
+
+    // Add special quantities section if any exist (> 1)
+    const peopleWithMultiples = activePeople.filter(p => p.quantity > 1);
+    if (peopleWithMultiples.length > 0) {
+         text += "\n*👥 Pessoas extras:*\n";
+         peopleWithMultiples.forEach(p => {
+             text += `• ${p.name}: vale por ${p.quantity} pessoas\n`;
+         });
     }
 
     // 2. Totais
     text += `\n*💰 Total:* R$ ${result.total.toFixed(2)}`;
-    text += `\n*🔢 Por pessoa:* R$ ${result.perPerson.toFixed(2)}\n\n`;
+    text += `\n*🔢 Por cota:* R$ ${result.perPerson.toFixed(2)}\n\n`;
 
     // 3. Plano de pagamentos
     text += "*💳 Pagamentos:*\n";
