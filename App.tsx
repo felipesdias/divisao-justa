@@ -11,7 +11,8 @@ const createEmptyPerson = (): Person => ({
   id: Math.random().toString(36).substr(2, 9),
   name: '',
   description: '',
-  paid: 0
+  paid: 0,
+  weight: 1
 });
 
 const App: React.FC = () => {
@@ -24,13 +25,15 @@ const App: React.FC = () => {
     const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (saved) {
       try {
-        setPeople(JSON.parse(saved));
+        const loaded = JSON.parse(saved);
+        // Migration: Ensure weight property exists
+        setPeople(loaded.map((p: any) => ({ ...p, weight: p.weight ?? 1 })));
       } catch (e) {
         console.error("Failed to parse local storage", e);
       }
     } else {
-        // Initial state with one empty person
-        setPeople([createEmptyPerson()]);
+      // Initial state with one empty person
+      setPeople([createEmptyPerson()]);
     }
     setIsLoaded(true);
   }, []);
@@ -47,12 +50,13 @@ const App: React.FC = () => {
     if (!isLoaded) return;
 
     const lastPerson = people[people.length - 1];
-    
+
     // Check if the last person is truly empty
     const isLastEmpty = !lastPerson || (
-      !lastPerson.name.trim() && 
-      !lastPerson.description?.trim() && 
-      lastPerson.paid === 0
+      !lastPerson.name.trim() &&
+      !lastPerson.description?.trim() &&
+      lastPerson.paid === 0 &&
+      (lastPerson.weight === 1 || lastPerson.weight === undefined)
     );
 
     // If the last person has started typing, add a new empty row
@@ -61,7 +65,7 @@ const App: React.FC = () => {
     }
   }, [people, isLoaded]);
 
-  const updatePerson = (id: string, field: 'name' | 'paid' | 'description', value: string | number) => {
+  const updatePerson = (id: string, field: 'name' | 'paid' | 'description' | 'weight', value: string | number) => {
     setPeople(people.map(p => p.id === id ? { ...p, [field]: value } : p));
   };
 
@@ -79,9 +83,9 @@ const App: React.FC = () => {
     // Determine if we are starting fresh or merging
     // Check if list is effectively empty (only contains empty rows)
     const isEffectiveEmpty = people.every(p => !p.name.trim() && p.paid === 0);
-    
+
     let baseList = isEffectiveEmpty ? [] : [...people];
-    
+
     // Remove any trailing empty rows from baseList before merging to keep it clean
     baseList = baseList.filter(p => p.name.trim() || p.description?.trim() || p.paid > 0);
 
@@ -96,7 +100,7 @@ const App: React.FC = () => {
         const existing = baseList[existingIndex];
         // Combine descriptions
         const newDesc = [existing.description, imported.description].filter(Boolean).join(', ');
-        
+
         baseList[existingIndex] = {
           ...existing,
           paid: existing.paid + imported.paid,
@@ -104,7 +108,7 @@ const App: React.FC = () => {
         };
       } else {
         // Add new person
-        baseList.push(imported);
+        baseList.push({ ...imported, weight: imported.weight ?? 1 });
       }
     });
 
@@ -121,7 +125,7 @@ const App: React.FC = () => {
         nameCounts[normalized] = (nameCounts[normalized] || 0) + 1;
       }
     });
-    
+
     return new Set(
       list.filter(p => {
         const normalized = p.name.trim().toLowerCase();
@@ -135,10 +139,10 @@ const App: React.FC = () => {
 
   // Only calculate result if no duplicates and valid names exist
   const validPeople = people.filter(p => p.name.trim() !== '');
-  const splitResult = (!hasDuplicates && validPeople.length > 0) 
-    ? calculateSplit(validPeople) 
+  const splitResult = (!hasDuplicates && validPeople.length > 0)
+    ? calculateSplit(validPeople)
     : { total: 0, perPerson: 0, transactions: [] };
-  
+
   const hasValidPeople = validPeople.length > 0;
 
   return (
@@ -148,7 +152,7 @@ const App: React.FC = () => {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="bg-indigo-600 text-white p-2 rounded-lg shadow-sm">
-               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01"/><path d="M17 12h.01"/><path d="M7 12h.01"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="6" width="20" height="12" rx="2" /><path d="M12 12h.01" /><path d="M17 12h.01" /><path d="M7 12h.01" /></svg>
             </div>
             <h1 className="text-xl font-bold text-slate-900">
               Divisão Justa
@@ -159,35 +163,35 @@ const App: React.FC = () => {
               onClick={() => setIsAIModalOpen(true)}
               className="hidden sm:flex items-center gap-2 px-4 py-2 text-sm font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-lg transition-all shadow-sm"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L12 3Z"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L12 3Z" /></svg>
               IA Mágica
             </button>
-            <button 
-                onClick={clearAll}
-                className="p-2 text-slate-500 hover:text-red-600 hover:bg-red-50 hover:border-red-200 border border-transparent rounded-lg transition-all"
-                title="Limpar tudo"
+            <button
+              onClick={clearAll}
+              className="p-2 text-slate-500 hover:text-red-600 hover:bg-red-50 hover:border-red-200 border border-transparent rounded-lg transition-all"
+              title="Limpar tudo"
             >
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
             </button>
           </div>
         </div>
       </header>
 
       <main className="max-w-3xl mx-auto px-4 sm:px-6 py-8 grid gap-8">
-        
+
         {/* Input Section */}
         <section>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold text-slate-800">Pessoas & Gastos</h2>
-             <button
+            <button
               onClick={() => setIsAIModalOpen(true)}
               className="sm:hidden flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-lg transition-colors"
             >
-               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z" /></svg>
               Importar com IA
             </button>
           </div>
-          
+
           <div className="space-y-4">
             {people.map((person, index) => (
               <PersonRow
@@ -206,21 +210,21 @@ const App: React.FC = () => {
 
         {/* Results Section */}
         <section>
-           <h2 className="text-xl font-bold text-slate-800 mb-4">Resultado da Divisão</h2>
-           {hasDuplicates ? (
-             <div className="p-6 bg-red-50 border border-red-200 rounded-xl text-center">
-                <p className="text-red-700 font-bold mb-1">Nomes duplicados encontrados</p>
-                <p className="text-red-600 text-sm">Por favor, corrija os nomes repetidos para ver o resultado da divisão.</p>
-             </div>
-           ) : (
-             <Results result={splitResult} hasPeople={hasValidPeople} people={validPeople} />
-           )}
+          <h2 className="text-xl font-bold text-slate-800 mb-4">Resultado da Divisão</h2>
+          {hasDuplicates ? (
+            <div className="p-6 bg-red-50 border border-red-200 rounded-xl text-center">
+              <p className="text-red-700 font-bold mb-1">Nomes duplicados encontrados</p>
+              <p className="text-red-600 text-sm">Por favor, corrija os nomes repetidos para ver o resultado da divisão.</p>
+            </div>
+          ) : (
+            <Results result={splitResult} hasPeople={hasValidPeople} people={validPeople} />
+          )}
         </section>
       </main>
-      
-      <AIModal 
-        isOpen={isAIModalOpen} 
-        onClose={() => setIsAIModalOpen(false)} 
+
+      <AIModal
+        isOpen={isAIModalOpen}
+        onClose={() => setIsAIModalOpen(false)}
         onImport={handleAIImport}
       />
     </div>

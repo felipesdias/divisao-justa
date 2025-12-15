@@ -5,14 +5,14 @@ interface PersonRowProps {
   person: Person;
   isDuplicate: boolean;
   isLast: boolean;
-  onChange: (id: string, field: 'name' | 'paid' | 'description', value: string | number) => void;
+  onChange: (id: string, field: 'name' | 'paid' | 'description' | 'weight', value: string | number) => void;
   onRemove: (id: string) => void;
 }
 
 const PersonRow: React.FC<PersonRowProps> = ({ person, isDuplicate, isLast, onChange, onRemove }) => {
   return (
     <div className={`flex flex-col md:flex-row gap-3 items-start md:items-center bg-white p-4 rounded-lg shadow-sm border animate-fade-in hover:shadow-md transition-shadow relative ${isDuplicate ? 'border-red-300 ring-1 ring-red-100' : 'border-slate-200'}`}>
-      
+
       {/* Name Field */}
       <div className="flex-1 w-full min-w-[200px]">
         <label className="block text-xs font-bold text-slate-700 mb-1.5 md:hidden">Nome</label>
@@ -44,6 +44,21 @@ const PersonRow: React.FC<PersonRowProps> = ({ person, isDuplicate, isLast, onCh
         />
       </div>
 
+      {/* Weight Field */}
+      <div className="flex-1 w-full md:w-20 md:max-w-[80px]">
+        <label className="block text-xs font-bold text-slate-700 mb-1.5 md:hidden">Peso</label>
+        <input
+          type="number"
+          min="0"
+          step="0.1"
+          value={person.weight || ''}
+          onChange={(e) => onChange(person.id, 'weight', parseFloat(e.target.value) || 0)}
+          placeholder="1"
+          title="Peso da divisão (Padrão: 1)"
+          className="w-full px-2 py-2.5 bg-slate-50 border border-slate-300 text-slate-900 placeholder-slate-500 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all text-sm text-center"
+        />
+      </div>
+
       {/* Amount Field */}
       <div className="flex-1 w-full md:w-auto md:max-w-[160px] relative">
         <label className="block text-xs font-bold text-slate-700 mb-1.5 md:hidden">Valor Pago</label>
@@ -72,10 +87,10 @@ const PersonRow: React.FC<PersonRowProps> = ({ person, isDuplicate, isLast, onCh
           </svg>
         </button>
       )}
-      
+
       {/* Spacer for alignment if button is hidden on desktop */}
       {isLast && (
-         <div className="hidden md:block w-[42px]"></div>
+        <div className="hidden md:block w-[42px]"></div>
       )}
     </div>
   );

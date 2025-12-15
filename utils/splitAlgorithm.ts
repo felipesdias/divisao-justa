@@ -2,20 +2,26 @@ import { Person, Transaction, SplitResult } from '../types';
 
 export const calculateSplit = (people: Person[]): SplitResult => {
   const total = people.reduce((sum, p) => sum + p.paid, 0);
+  const totalWeight = people.reduce((sum, p) => sum + (p.weight || 1), 0);
+
   // Avoid division by zero
-  if (people.length === 0) {
+  if (people.length === 0 || totalWeight === 0) {
     return { total: 0, perPerson: 0, transactions: [] };
   }
 
-  const perPerson = total / people.length;
-  
-  // Calculate initial balances: how much each person paid minus the average they SHOULD have paid.
+  // Cost per unit of weight
+  const costPerUnitWeight = total / totalWeight;
+
+  // Calculate initial balances: how much each person paid minus their fair share (weight * costPerUnit).
   // Positive balance = they are owed money.
   // Negative balance = they owe money.
-  const balances = people.map(p => ({
-    ...p,
-    balance: p.paid - perPerson
-  })).filter(p => Math.abs(p.balance) > 0.009); // Filter out settled people (floating point tolerance)
+  const balances = people.map(p => {
+    const fairShare = (p.weight || 1) * costPerUnitWeight;
+    return {
+      ...p,
+      balance: p.paid - fairShare
+    };
+  }).filter(p => Math.abs(p.balance) > 0.009); // Filter out settled people (floating point tolerance)
 
   const transactions: Transaction[] = [];
 
@@ -32,7 +38,7 @@ export const calculateSplit = (people: Person[]): SplitResult => {
 
     // The amount to settle is the minimum of what the debtor owes and what the creditor is owed
     const amount = Math.min(Math.abs(debtor.balance), creditor.balance);
-    
+
     // Create transaction
     if (amount > 0.009) {
       transactions.push({
