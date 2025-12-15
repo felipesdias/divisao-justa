@@ -11,6 +11,7 @@ export const calculateSplit = (people: Person[]): SplitResult => {
 
   // Cost per unit of weight
   const costPerUnitWeight = total / totalWeight;
+  const perPerson = total / people.length;
 
   // Calculate initial balances: how much each person paid minus their fair share (weight * costPerUnit).
   // Positive balance = they are owed money.
