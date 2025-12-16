@@ -39,21 +39,28 @@ const Results: React.FC<ResultsProps> = ({ result, people, hasPeople }) => {
     }
 
     // 2. Totais
-    text += `\n*💰 Total Geral:* R$ ${result.total.toFixed(2)}`;
-    text += `\n*🔢 Média por pessoa:* R$ ${result.perPerson.toFixed(2)}\n\n`;
+    text += `\n*💰 Total:* R$ ${result.total.toFixed(2)}`;
+    text += `\n*🔢 Por pessoa:* R$ ${result.perPerson.toFixed(2)}\n\n`;
 
     // 3. Plano de pagamentos
-    text += "*💳 Quem paga quem:*\n";
+    text += "*💳 Pagamentos:*\n";
     if (result.transactions.length === 0) {
       text += "✅ Tudo certo! Ninguém deve nada.";
     } else {
       result.transactions.forEach(tx => {
-        const receiver = people.find(p => p.name === tx.to);
-        const pixText = receiver?.pix ? ` (pix: ${receiver.pix})` : "";
-
-        text += `\n• *${tx.from}* paga R$ ${tx.amount.toFixed(2)} para *${tx.to}*${pixText}\n`;
+        text += `\n• *${tx.from}* paga *${tx.to}*: R$ ${tx.amount.toFixed(2)}`;
       });
     }
+
+    // 4. Informações de pix
+    text += `\n\n* PIX para pagamentos:*\n`;
+    const receivers = [...new Set(result.transactions.map(tx => tx.to))];
+    receivers.forEach(receiver => {
+      const person = people.find(p => p.name === receiver);
+      if (person?.pix) {
+        text += `\n• ${person.name}: ${person.pix}`;
+      }
+    });
 
     text += "\n-------------------\n";
     text += "_Gerado por Divisão Justa_: https://felipesdias.github.io/divisao-justa";
