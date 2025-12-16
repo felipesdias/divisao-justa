@@ -49,10 +49,9 @@ const Results: React.FC<ResultsProps> = ({ result, people, hasPeople }) => {
     } else {
       result.transactions.forEach(tx => {
         const receiver = people.find(p => p.name === tx.to);
-        const pixInfo = receiver?.pix ? `\n   📱 PIX: ${receiver.pix}` : "";
+        const pixText = receiver?.pix ? `\n    PIX: ${receiver.pix}` : "";
 
-        text += `\n🔴 *${tx.from}* paga para 🟢 *${tx.to}*\n`;
-        text += `   💸 Valor: R$ ${tx.amount.toFixed(2)}${pixInfo}\n`;
+        text += `\n➤ *${tx.from}* paga R$ ${tx.amount.toFixed(2)} para *${tx.to}*${pixText}`;
       });
     }
 
