@@ -49,9 +49,9 @@ const Results: React.FC<ResultsProps> = ({ result, people, hasPeople }) => {
     } else {
       result.transactions.forEach(tx => {
         const receiver = people.find(p => p.name === tx.to);
-        const pixText = receiver?.pix ? `(pix: ${receiver.pix})` : "";
+        const pixText = receiver?.pix ? ` (pix: ${receiver.pix})` : "";
 
-        text += `\n• *${tx.from}* paga R$ ${tx.amount.toFixed(2)} para *${tx.to}*${pixText}`;
+        text += `\n• *${tx.from}* paga R$ ${tx.amount.toFixed(2)} para *${tx.to}*${pixText}\n`;
       });
     }
 
