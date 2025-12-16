@@ -180,7 +180,7 @@ const App: React.FC = () => {
         </div>
       </header>
 
-      <main className="max-w-3xl mx-auto px-4 sm:px-6 py-8 grid gap-8">
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 grid gap-8">
 
         {/* Input Section */}
         <section>
@@ -195,7 +195,17 @@ const App: React.FC = () => {
             </button>
           </div>
 
-          <div className="space-y-4">
+          {/* Desktop Header Row */}
+          <div className="hidden md:flex gap-3 px-4 mb-2 text-xs font-bold text-slate-500 uppercase tracking-wider">
+            <div className="flex-[2]">Pessoa</div>
+            <div className="flex-[2]">Descrição</div>
+            <div className="flex-[1.5]">PIX</div>
+            <div className="w-20 text-center">Peso</div>
+            <div className="w-32">Valor Pago</div>
+            <div className="w-10"></div> {/* Actions placeholder */}
+          </div>
+
+          <div className="space-y-4 md:space-y-3">
             {people.map((person, index) => (
               <PersonRow
                 key={person.id}
