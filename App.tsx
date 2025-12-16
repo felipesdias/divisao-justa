@@ -106,7 +106,8 @@ const App: React.FC = () => {
         baseList[existingIndex] = {
           ...existing,
           paid: existing.paid + imported.paid,
-          description: newDesc
+          description: newDesc,
+          pix: existing.pix || imported.pix
         };
       } else {
         // Add new person
