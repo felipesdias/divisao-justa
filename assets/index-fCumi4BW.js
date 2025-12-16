@@ -59,7 +59,7 @@ Error generating stack: `+s.message+`
 `,i.transactions.length===0?r+=`✅ Tudo certo! Ninguém deve nada.
 `:i.transactions.forEach(y=>{r+=`• *${y.from}* paga *${y.to}*: R$ ${y.amount.toFixed(2)}
 `}),r+=`
-*🔑 PIX para pagamentos:*
+*🔑 PIX:*
 `,[...new Set(i.transactions.map(y=>y.to))].forEach(y=>{const h=n.find(v=>v.name===y);h!=null&&h.pix&&(r+=`• ${h.name}: ${h.pix}
 `)}),r+=`
 -------------------
