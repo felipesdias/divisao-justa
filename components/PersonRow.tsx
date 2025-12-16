@@ -55,7 +55,7 @@ const PersonRow: React.FC<PersonRowProps> = ({ person, isDuplicate, isLast, onCh
           onChange={(e) => onChange(person.id, 'weight', parseFloat(e.target.value) || 0)}
           placeholder="1"
           title="Peso da divisão (Padrão: 1)"
-          className="w-full px-2 py-2.5 bg-slate-50 border border-slate-300 text-slate-900 placeholder-slate-500 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all text-sm text-center"
+          className="w-full px-2 py-2.5 bg-slate-50 border border-slate-300 text-slate-900 placeholder-slate-500 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all text-sm"
         />
       </div>
 
