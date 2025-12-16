@@ -53,7 +53,7 @@ const Results: React.FC<ResultsProps> = ({ result, people, hasPeople }) => {
     }
 
     // 4. Informações de pix
-    text += `\n*🔑 PIX para pagamentos:*\n`;
+    text += `\n*🔑 PIX:*\n`;
     const receivers = [...new Set(result.transactions.map(tx => tx.to))];
     receivers.forEach(receiver => {
       const person = people.find(p => p.name === receiver);
