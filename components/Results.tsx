@@ -25,37 +25,34 @@ const Results: React.FC<ResultsProps> = ({ result, people, hasPeople }) => {
     let text = "*🧾 Divisão de Contas*\n\n";
 
     // 1. Descrição dos gastos
-    text += `💰 *Total:* R$ ${result.total.toFixed(2)}\n`;
-    text += `🔢 *Por pessoa:* R$ ${result.perPerson.toFixed(2)}\n\n`;
-    text += "\n\n";
-
-    // 2. Detalhes (Opcional/Final)
-    text += "*📋Gastos:*\n";
+    text += "*🛒 Gastos:*\n";
     const activePeople = people.filter(p => p.name.trim() !== '' && p.paid > 0);
 
     if (activePeople.length === 0) {
       text += "_Nenhum gasto registrado_\n";
     } else {
       activePeople.forEach(p => {
-        const desc = p.description ? ` - ${p.description}` : "";
-        text += `▪️ ${p.name}: R$ ${p.paid.toFixed(2)}${desc}\n`;
+        const desc = p.description ? ` (${p.description})` : "";
+        const weight = p.weight !== 1 ? ` [Peso: ${p.weight}]` : "";
+        text += `• ${p.name}${desc}${weight}: R$ ${p.paid.toFixed(2)}\n`;
       });
     }
-    text += "\n";
 
-    // 3. Quem deve quem (O mais importante)
-    text += "*💸 Pagamentos:*\n";
+    // 2. Totais
+    text += `\n*💰 Total:* R$ ${result.total.toFixed(2)}`;
+    text += `\n*🔢 Por pessoa:* R$ ${result.perPerson.toFixed(2)}\n\n`;
+
+    // 3. Plano de pagamentos
+    text += "*💳 Pagamentos:*\n";
     if (result.transactions.length === 0) {
-      text += "✅ Tudo quitado! Ninguém deve nada.\n";
+      text += "✅ Tudo certo! Ninguém deve nada.";
     } else {
       result.transactions.forEach(tx => {
-        text += `\n👉 *${tx.from}* paga *${tx.to}*\n`;
-        text += `   R$ ${tx.amount.toFixed(2)}\n`;
+        text += `• *${tx.from}* paga *${tx.to}*: R$ ${tx.amount.toFixed(2)}\n`;
       });
     }
-    text += "\n";
 
-    // Link para o app (https://felipesdias.github.io/divisao-justa/)
+    text += "\n\n";
     text += "_Gerado por Divisão Justa_: https://felipesdias.github.io/divisao-justa";
 
     const encodedText = encodeURIComponent(text);
