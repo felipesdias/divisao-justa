@@ -16,7 +16,7 @@ export const parseExpensesWithGemini = async (text: string, customApiKey?: strin
   try {
     const response = await ai.models.generateContent({
       model: "gemini-2.5-flash",
-      contents: `Extract a list of people, what they paid for (description), the amount they paid, and their weight (participation weight) from the following text. 
+      contents: `Extract a list of people, what they paid for (description), the amount they paid, their weight (participation weight), and their PIX key if available from the following text.
       Text: "${text}"
       
       Return the data strictly as a JSON array of objects.
@@ -25,6 +25,7 @@ export const parseExpensesWithGemini = async (text: string, customApiKey?: strin
       - 'paid' (number): Amount paid. Convert currency to raw number.
       - 'description' (string): Short description of what was purchased (e.g., "Uber", "Drinks"). If not specified, leave empty string.
       - 'weight' (number): Participation weight for the person. Defaults to 1 if not specified. Search for keywords like "peso", "weight", "x2", "meio", etc. If someone pays for 2 people, weight might be 2. If it's a couple, weight might be 2.
+      - 'pix' (string): The PIX key/alias of the person if mentioned (e.g., email, phone, random key). If not found, leave empty string.
       
       If the text mentions the same person multiple times, list them as separate entries in the array (do not sum them up yourself).`,
       config: {
@@ -49,6 +50,10 @@ export const parseExpensesWithGemini = async (text: string, customApiKey?: strin
               weight: {
                 type: Type.NUMBER,
                 description: "Weight of the person in the split (default 1)",
+              },
+              pix: {
+                type: Type.STRING,
+                description: "PIX key of the person",
               }
             },
             required: ["name", "paid"],
@@ -60,12 +65,13 @@ export const parseExpensesWithGemini = async (text: string, customApiKey?: strin
     const rawData = JSON.parse(response.text || "[]");
 
     // Map to our internal Person structure
-    return rawData.map((item: { name: string; paid: number; description?: string; weight?: number }) => ({
+    return rawData.map((item: { name: string; paid: number; description?: string; weight?: number; pix?: string }) => ({
       id: generateId(),
       name: item.name,
       paid: Number(item.paid),
       description: item.description || '',
-      weight: item.weight || 1
+      weight: item.weight || 1,
+      pix: item.pix || ''
     }));
 
   } catch (error) {

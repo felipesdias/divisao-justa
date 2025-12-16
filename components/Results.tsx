@@ -39,20 +39,27 @@ const Results: React.FC<ResultsProps> = ({ result, people, hasPeople }) => {
     }
 
     // 2. Totais
-    text += `\n*💰 Total:* R$ ${result.total.toFixed(2)}`;
-    text += `\n*🔢 Por pessoa:* R$ ${result.perPerson.toFixed(2)}\n\n`;
+    text += `\n*💰 Total Geral:* R$ ${result.total.toFixed(2)}`;
+    text += `\n*🔢 Média por pessoa:* R$ ${result.perPerson.toFixed(2)}\n\n`;
 
     // 3. Plano de pagamentos
-    text += "*💳 Pagamentos:*\n";
+    text += "*💳 Quem paga quem:*\n";
     if (result.transactions.length === 0) {
       text += "✅ Tudo certo! Ninguém deve nada.";
     } else {
+      // Group transactions by receiver to make it cleaner?
+      // Or just list them with PIX info. Let's list linearly but with better formatting.
+
       result.transactions.forEach(tx => {
-        text += `• *${tx.from}* paga *${tx.to}*: R$ ${tx.amount.toFixed(2)}\n`;
+        const receiver = people.find(p => p.name === tx.to);
+        const pixInfo = receiver?.pix ? `\n   📱 PIX: ${receiver.pix}` : "";
+
+        text += `\n🔴 *${tx.from}* paga para 🟢 *${tx.to}*\n`;
+        text += `   💸 Valor: R$ ${tx.amount.toFixed(2)}${pixInfo}\n`;
       });
     }
 
-    text += "\n\n";
+    text += "\n-------------------\n";
     text += "_Gerado por Divisão Justa_: https://felipesdias.github.io/divisao-justa";
 
     const encodedText = encodeURIComponent(text);
@@ -110,6 +117,11 @@ const Results: React.FC<ResultsProps> = ({ result, people, hasPeople }) => {
                       <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
                       {tx.to}
                     </span>
+                    {people.find(p => p.name === tx.to)?.pix && (
+                      <span className="text-[10px] text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded mt-0.5 self-start">
+                        PIX: {people.find(p => p.name === tx.to)?.pix}
+                      </span>
+                    )}
                   </div>
                 </div>
                 <div className="flex items-center gap-3">

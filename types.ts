@@ -4,6 +4,7 @@ export interface Person {
   description?: string;
   paid: number;
   weight: number;
+  pix?: string;
 }
 
 export interface Transaction {

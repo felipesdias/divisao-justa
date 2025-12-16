@@ -5,7 +5,7 @@ interface PersonRowProps {
   person: Person;
   isDuplicate: boolean;
   isLast: boolean;
-  onChange: (id: string, field: 'name' | 'paid' | 'description' | 'weight', value: string | number) => void;
+  onChange: (id: string, field: 'name' | 'paid' | 'description' | 'weight' | 'pix', value: string | number) => void;
   onRemove: (id: string) => void;
 }
 
@@ -44,6 +44,18 @@ const PersonRow: React.FC<PersonRowProps> = ({ person, isDuplicate, isLast, onCh
         />
       </div>
 
+      {/* PIX Field */}
+      <div className="flex-1 w-full">
+        <label className="block text-xs font-bold text-slate-700 mb-1.5 md:hidden">Chave PIX (Opcional)</label>
+        <input
+          type="text"
+          value={person.pix || ''}
+          onChange={(e) => onChange(person.id, 'pix', e.target.value)}
+          placeholder="Chave PIX"
+          className="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 text-slate-900 placeholder-slate-500 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all text-sm"
+        />
+      </div>
+
       {/* Weight Field */}
       <div className="flex-1 w-full md:w-20 md:max-w-[80px]">
         <label className="block text-xs font-bold text-slate-700 mb-1.5 md:hidden">Peso</label>
@@ -55,7 +67,7 @@ const PersonRow: React.FC<PersonRowProps> = ({ person, isDuplicate, isLast, onCh
           onChange={(e) => onChange(person.id, 'weight', parseFloat(e.target.value) || 0)}
           placeholder="1"
           title="Peso da divisão (Padrão: 1)"
-          className="w-full px-2 py-2.5 bg-slate-50 border border-slate-300 text-slate-900 placeholder-slate-500 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all text-sm"
+          className="w-full px-4 py-2.5 bg-slate-50 border border-slate-300 text-slate-900 placeholder-slate-500 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all text-sm"
         />
       </div>
 

@@ -12,7 +12,8 @@ const createEmptyPerson = (): Person => ({
   name: '',
   description: '',
   paid: 0,
-  weight: 1
+  weight: 1,
+  pix: ''
 });
 
 const App: React.FC = () => {
@@ -55,6 +56,7 @@ const App: React.FC = () => {
     const isLastEmpty = !lastPerson || (
       !lastPerson.name.trim() &&
       !lastPerson.description?.trim() &&
+      !lastPerson.pix?.trim() &&
       lastPerson.paid === 0 &&
       (lastPerson.weight === 1 || lastPerson.weight === undefined)
     );
@@ -65,7 +67,7 @@ const App: React.FC = () => {
     }
   }, [people, isLoaded]);
 
-  const updatePerson = (id: string, field: 'name' | 'paid' | 'description' | 'weight', value: string | number) => {
+  const updatePerson = (id: string, field: 'name' | 'paid' | 'description' | 'weight' | 'pix', value: string | number) => {
     setPeople(people.map(p => p.id === id ? { ...p, [field]: value } : p));
   };
 
