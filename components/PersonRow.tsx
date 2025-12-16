@@ -55,7 +55,7 @@ const PersonRow: React.FC<PersonRowProps> = ({ person, isDuplicate, isLast, onCh
           onChange={(e) => onChange(person.id, 'weight', parseFloat(e.target.value) || 0)}
           placeholder="1"
           title="Peso da divisão (Padrão: 1)"
-          className="w-full px-2 py-2.5 bg-slate-50 border border-slate-300 text-slate-900 placeholder-slate-500 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all text-sm"
+          className="w-full px-2 py-2.5 bg-slate-50 border border-slate-300 text-slate-900 placeholder-slate-500 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:border-transparent transition-all text-sm text-left"
         />
       </div>
 
@@ -78,7 +78,7 @@ const PersonRow: React.FC<PersonRowProps> = ({ person, isDuplicate, isLast, onCh
       {!isLast && (
         <button
           onClick={() => onRemove(person.id)}
-          className="w-full md:w-auto p-2.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-100 self-end md:self-center"
+          className="w-full md:w-auto p-2.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-100 self-end md:self-center flex justify-end md:justify-center"
           title="Remover pessoa"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
