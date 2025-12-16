@@ -40,25 +40,25 @@ const Results: React.FC<ResultsProps> = ({ result, people, hasPeople }) => {
 
     // 2. Totais
     text += `\n*💰 Total:* R$ ${result.total.toFixed(2)}`;
-    text += `\n*🔢 Por pessoa:* R$ ${result.perPerson.toFixed(2)}\n\n`;
+    text += `\n*🔢 Por pessoa:* R$ ${result.perPerson.toFixed(2)}\n`;
 
     // 3. Plano de pagamentos
-    text += "*💳 Pagamentos:*\n";
+    text += "\n*💳 Pagamentos:*\n";
     if (result.transactions.length === 0) {
-      text += "✅ Tudo certo! Ninguém deve nada.";
+      text += "✅ Tudo certo! Ninguém deve nada.\n";
     } else {
       result.transactions.forEach(tx => {
-        text += `\n• *${tx.from}* paga *${tx.to}*: R$ ${tx.amount.toFixed(2)}`;
+        text += `• *${tx.from}* paga *${tx.to}*: R$ ${tx.amount.toFixed(2)}\n`;
       });
     }
 
     // 4. Informações de pix
-    text += `\n\n* PIX para pagamentos:*\n`;
+    text += `\n*🔑 PIX para pagamentos:*\n`;
     const receivers = [...new Set(result.transactions.map(tx => tx.to))];
     receivers.forEach(receiver => {
       const person = people.find(p => p.name === receiver);
       if (person?.pix) {
-        text += `\n• ${person.name}: ${person.pix}`;
+        text += `• ${person.name}: ${person.pix}\n`;
       }
     });
 
